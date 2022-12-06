@@ -1,0 +1,21 @@
+services:
+  app:
+    container_name: job-exam-bravocare-app
+    build: .
+    volumes:
+      - .:/home/node/app
+    ports: 
+      - 3000:3000
+
+  database:
+    container_name: job-exam-bravocare-database
+    image: postgres:15.1 # fixed at last version
+    restart: always
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: exam
+    volumes:
+      - ./docker/database:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
