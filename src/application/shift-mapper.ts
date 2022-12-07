@@ -7,6 +7,7 @@ export class ShiftMapper {
     return {
       shift_id: shift.id,
       facility_id: shift.facility.id,
+      facility_name: shift.facility.name,
       shift_date: shift.date.toTimeString(),
       start_time: shift.startTime.value,
       end_time: shift.endTime.value,
@@ -17,6 +18,7 @@ export class ShiftMapper {
     return {
       id: shift.id,
       facilityId: shift.facility.id,
+      facilityName: shift.facility.name,
       date: shift.date.toISOString(),
       startTime: shift.startTime.value,
       endTime: shift.endTime.value,
@@ -29,6 +31,7 @@ export class ShiftMapper {
     return new ShiftViewModel(
       persistence.shift_id,
       persistence.facility_id,
+      persistence.facility_name,
       persistence.shift_date,
       persistence.start_time,
       persistence.end_time

@@ -1,4 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { ListAllShiftsQueryHandler } from "@application/list-all-shifts";
+import { PostgresConnection } from "@persistence/postgres";
 import { ShiftPostgresRepository } from "@persistence/shift-postgres-repository";
 import { ListShiftsController } from "@presentation/list-shifts-controller";
 import cors from "cors";
@@ -8,7 +12,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const shiftPostgresRepository = new ShiftPostgresRepository();
+const postgresqlConnection = new PostgresConnection();
+const shiftPostgresRepository = new ShiftPostgresRepository(
+  postgresqlConnection
+);
 const listAllShiftsQueeryHandler = new ListAllShiftsQueryHandler(
   shiftPostgresRepository
 );
