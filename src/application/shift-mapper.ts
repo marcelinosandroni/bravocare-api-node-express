@@ -1,3 +1,5 @@
+import { Facility } from "@domain/facility";
+import { Time } from "@domain/time";
 import { Shift } from "domain/shift";
 import { ShiftPersistenceDto } from "./shift-persistence-dto";
 import { ShiftViewModel } from "./shift-view-model";
@@ -23,6 +25,22 @@ export class ShiftMapper {
       startTime: shift.startTime.value,
       endTime: shift.endTime.value,
     };
+  }
+
+  static fromPersistence(persistence: ShiftPersistenceDto): Shift {
+    const facility = Facility.create(
+      { name: persistence.facility_name },
+      persistence.facility_id
+    );
+    return Shift.create(
+      {
+        facility,
+        date: new Date(persistence.shift_date),
+        startTime: Time.create(persistence.start_time),
+        endTime: Time.create(persistence.end_time),
+      },
+      persistence.shift_id
+    );
   }
 
   static fromPersistenceToViewModel(

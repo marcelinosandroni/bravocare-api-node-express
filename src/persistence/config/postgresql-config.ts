@@ -1,4 +1,6 @@
-export const postgresqlConfig = {
+import { PoolConfig } from "pg";
+
+export const postgresqlConfig: PoolConfig = {
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
@@ -7,4 +9,5 @@ export const postgresqlConfig = {
   max: 100,
   connectionTimeoutMillis: 60_000,
   idleTimeoutMillis: 60_000,
+  log: (...message: unknown[]) => console.log({ message }),
 } as const;

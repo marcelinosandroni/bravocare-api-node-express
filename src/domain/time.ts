@@ -31,4 +31,9 @@ export class Time {
     const [hours, minutes] = this.value.split(":");
     return parseInt(hours) + parseInt(minutes) / 60;
   }
+
+  getHours(): number {
+    const [hours, minutes, seconds] = this.value.split(":");
+    return parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
+  }
 }

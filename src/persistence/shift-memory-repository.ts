@@ -87,6 +87,10 @@ export class ShiftMemoryRepository implements ShiftRepository {
     });
   }
 
+  async findById(...id: number[]): Promise<ShiftPersistenceDto[]> {
+    throw new Error("Method not implemented.");
+  }
+
   async findAll(): Promise<ShiftPersistenceDto[]> {
     return this.shifts;
   }

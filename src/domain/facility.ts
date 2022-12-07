@@ -1,30 +1,19 @@
+import { Entity } from "./entity";
+
 interface FacilityProperties {
-  id: number;
   name: string;
 }
 
-export class Facility {
-  private properties: FacilityProperties;
-
-  get id(): number {
-    return this.properties.id;
-  }
-
+export class Facility extends Entity<FacilityProperties> {
   get name(): string {
     return this.properties.name;
   }
 
-  private constructor(properties: FacilityProperties) {
-    this.properties = properties;
+  private constructor(properties: FacilityProperties, id?: number) {
+    super(properties, id);
   }
 
-  static create(properties: FacilityProperties): Facility {
-    if (!properties.id) {
-      throw new Error("Facility id is required");
-    }
-    if (properties.id < 0) {
-      throw new Error("Facility id must be greater than 0");
-    }
+  static create(properties: FacilityProperties, id?: number): Facility {
     if (!properties.name) {
       throw new Error("Facility name is required");
     }

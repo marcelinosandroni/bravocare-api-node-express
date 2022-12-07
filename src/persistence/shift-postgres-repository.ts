@@ -21,6 +21,23 @@ export class ShiftPostgresRepository implements ShiftRepository {
     return this.connection.query<ShiftPersistenceDto>(query);
   }
 
+  async findById(...id: number[]): Promise<ShiftPersistenceDto[]> {
+    console.log({ id });
+    const query = `
+      SELECT s.*, f.facility_name FROM ${this.tableName} s 
+      INNER JOIN ${this.facilityTableName} f 
+      ON s.facility_id = f.facility_id
+      WHERE s.shift_id = ANY($1)
+    `;
+    // const query = `
+    // SELECT * FROM ${this.tableName} WHERE shift_id = ANY($1)`;
+    const response = await this.connection.query<ShiftPersistenceDto>(query, [
+      [1, 2],
+    ]);
+    console.log({ response });
+    return response;
+  }
+
   async create(shift: Shift): Promise<unknown> {
     const query = `
       INSERT INTO shifts (facility_id, shift_data, start_time, end_time) 

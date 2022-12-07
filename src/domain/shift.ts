@@ -33,7 +33,8 @@ export class Shift extends Entity<ShiftProperties> {
     super(properties, id);
   }
 
-  static create(properties: ShiftInput): Shift {
+  static create(properties: ShiftInput, id?: number): Shift {
+    console.log({ properties });
     if (!properties.facility) {
       throw new Error("Shift facility is required");
     }
@@ -46,7 +47,10 @@ export class Shift extends Entity<ShiftProperties> {
     if (!properties.endTime) {
       throw new Error("Shift end time is required");
     }
-    if (properties.startTime >= properties.endTime) {
+    if (
+      properties.startTime.toMilliseconds() >=
+      properties.endTime.toMilliseconds()
+    ) {
       throw new Error("Shift start time must be before end time");
     }
     const durationInMinutes =
@@ -54,10 +58,13 @@ export class Shift extends Entity<ShiftProperties> {
     if (durationInMinutes < 10) {
       throw new Error("Shift must be at least 10 minutes");
     }
-    return new Shift({
-      ...properties,
-      durationInMinutes,
-    });
+    return new Shift(
+      {
+        ...properties,
+        durationInMinutes,
+      },
+      id
+    );
   }
 
   private static calculateDurationInMinutes(
@@ -65,6 +72,32 @@ export class Shift extends Entity<ShiftProperties> {
     endTime: Date
   ): number {
     return endTime.getTime() - startTime.getTime() / 1_000 / 60;
+  }
+
+  calculateOverlapThreshold(other: Shift): number {
+    return this.facility.id === other.facility.id ? 30 : 0;
+  }
+
+  calculateOverlapMinutes(other: Shift): number {
+    if (this.date.toDateString() !== other.date.toDateString()) {
+      return 0;
+    }
+
+    if (
+      this.endTime.getHours() > other.startTime.getHours() &&
+      this.endTime.getHours() < other.endTime.getHours()
+    ) {
+      return Math.round(this.endTime.toMinutes() - other.startTime.toMinutes());
+    }
+
+    if (
+      other.endTime.getHours() > this.startTime.getHours() &&
+      other.endTime.getHours() < this.endTime.getHours()
+    ) {
+      return Math.round(other.endTime.toMinutes() - this.startTime.toMinutes());
+    }
+
+    return 0;
   }
 
   correctFacility(facility: Facility): void {
