@@ -9,5 +9,4 @@ export const postgresqlConfig: PoolConfig = {
   max: 100,
   connectionTimeoutMillis: 60_000,
   idleTimeoutMillis: 60_000,
-  log: (...message: unknown[]) => console.log({ message }),
 } as const;

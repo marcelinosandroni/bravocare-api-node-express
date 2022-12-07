@@ -32,7 +32,7 @@ export class ShiftPostgresRepository implements ShiftRepository {
     // const query = `
     // SELECT * FROM ${this.tableName} WHERE shift_id = ANY($1)`;
     const response = await this.connection.query<ShiftPersistenceDto>(query, [
-      [1, 2],
+      id,
     ]);
     console.log({ response });
     return response;

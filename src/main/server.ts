@@ -9,6 +9,7 @@ import { CompareShiftsController } from "@presentation/compare-shifts-controller
 import { ListShiftsController } from "@presentation/list-shifts-controller";
 import cors from "cors";
 import express from "express";
+import { logger } from "../application/logger";
 
 const app = express();
 app.use(express.json());
@@ -29,7 +30,7 @@ app.get("/shifts", async (request, response) => {
   return response.status(httpResponse.statusCode).send(httpResponse.body);
 });
 
-// Factory
+// Separate in a Factory
 const compareShiftCommandHandler = new CompareShiftsCommandHandler(
   shiftPostgresRepository
 );
@@ -37,7 +38,7 @@ const compareShiftController = new CompareShiftsController(
   compareShiftCommandHandler
 );
 
-// Adapter
+// Separate in a Adapter
 app.post("/shifts/compare", async (request, response) => {
   const httpResponse = await compareShiftController.handle(request);
   return response.status(httpResponse.statusCode).send(httpResponse.body);
@@ -45,3 +46,4 @@ app.post("/shifts/compare", async (request, response) => {
 
 // Application
 app.listen(3000, () => console.log(`Server started on port 3000`));
+logger.info("server started testing log");
