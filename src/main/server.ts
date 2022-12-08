@@ -10,10 +10,12 @@ import { ListShiftsController } from "@presentation/list-shifts-controller";
 import cors from "cors";
 import express from "express";
 import { logger } from "../application/logger";
+import { router } from "./routes";
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(router);
 
 const postgresqlConnection = new PostgresConnection();
 const shiftPostgresRepository = new ShiftPostgresRepository(

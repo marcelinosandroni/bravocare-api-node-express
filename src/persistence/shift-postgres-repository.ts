@@ -1,5 +1,6 @@
 import { ShiftPersistenceDto } from "@application/shift-persistence-dto";
 import { ShiftRepository } from "@application/shift-repository";
+import { Result } from "@domain/result";
 import { Shift } from "@domain/shift";
 import { Connection } from "./connection";
 
@@ -21,8 +22,7 @@ export class ShiftPostgresRepository implements ShiftRepository {
     return this.connection.query<ShiftPersistenceDto>(query);
   }
 
-  async findById(...id: number[]): Promise<ShiftPersistenceDto[]> {
-    console.log({ id });
+  async findById(...id: number[]): Promise<Result<ShiftPersistenceDto[]>> {
     const query = `
       SELECT s.*, f.facility_name FROM ${this.tableName} s 
       INNER JOIN ${this.facilityTableName} f 
@@ -31,11 +31,19 @@ export class ShiftPostgresRepository implements ShiftRepository {
     `;
     // const query = `
     // SELECT * FROM ${this.tableName} WHERE shift_id = ANY($1)`;
-    const response = await this.connection.query<ShiftPersistenceDto>(query, [
-      id,
-    ]);
-    console.log({ response });
-    return response;
+    try {
+      const response = await this.connection.query<ShiftPersistenceDto>(query, [
+        id,
+      ]);
+      console.log({ response });
+      return Result.success(response);
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        return Result.failure(error);
+      }
+      return Result.failure(new Error(String(error) || "Unknown error"));
+    }
   }
 
   async create(shift: Shift): Promise<unknown> {

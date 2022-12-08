@@ -34,7 +34,6 @@ export class Shift extends Entity<ShiftProperties> {
   }
 
   static create(properties: ShiftInput, id?: number): Shift {
-    console.log({ properties });
     if (!properties.facility) {
       throw new Error("Shift facility is required");
     }
@@ -47,14 +46,10 @@ export class Shift extends Entity<ShiftProperties> {
     if (!properties.endTime) {
       throw new Error("Shift end time is required");
     }
-    if (
-      properties.startTime.toMilliseconds() >=
-      properties.endTime.toMilliseconds()
-    ) {
-      throw new Error("Shift start time must be before end time");
-    }
     const durationInMinutes =
-      properties.endTime.toMinutes() - properties.startTime.toMinutes();
+      properties.startTime.toHours() < properties.endTime.toHours()
+        ? properties.endTime.toMinutes() - properties.startTime.toMinutes()
+        : properties.startTime.toMinutes() - properties.endTime.toMinutes();
     if (durationInMinutes < 10) {
       throw new Error("Shift must be at least 10 minutes");
     }

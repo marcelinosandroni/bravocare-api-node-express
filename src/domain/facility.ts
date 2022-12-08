@@ -20,7 +20,7 @@ export class Facility extends Entity<FacilityProperties> {
     if (properties.name.length < 3) {
       throw new Error("Facility name must be at least 3 characters");
     }
-    return new Facility(properties);
+    return new Facility(properties, id);
   }
 
   changeName(name: string): void {

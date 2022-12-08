@@ -1,3 +1,4 @@
+import { Result } from "@domain/result";
 import { ShiftPersistenceDto } from "application/shift-persistence-dto";
 import { ShiftRepository } from "application/shift-repository";
 
@@ -87,7 +88,7 @@ export class ShiftMemoryRepository implements ShiftRepository {
     });
   }
 
-  async findById(...id: number[]): Promise<ShiftPersistenceDto[]> {
+  async findById(...id: number[]): Promise<Result<ShiftPersistenceDto[]>> {
     throw new Error("Method not implemented.");
   }
 

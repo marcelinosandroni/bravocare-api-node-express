@@ -25,9 +25,17 @@ export class CompareShiftsController implements Controller {
 
     const { firstShiftId, secondShiftId } = request.body;
     const result = await this.useCase.handle({ firstShiftId, secondShiftId });
+    if (result.isFailure) {
+      return {
+        statusCode: 400,
+        body: {
+          error: result.error?.message,
+        },
+      };
+    }
     return {
       statusCode: 200,
-      body: result,
+      body: result.value,
     };
   }
 }
