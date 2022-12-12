@@ -13,4 +13,8 @@ export class Entity<Type> {
       this.isNew = true;
     }
   }
+
+  toObject(): Type {
+    return this.properties;
+  }
 }

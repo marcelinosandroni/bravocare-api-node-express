@@ -1,5 +1,6 @@
 import { Entity } from "./entity";
 import { Facility } from "./facility";
+import { RequiredAllBut } from "./require-all-but";
 
 interface JobProperties {
   facility: Facility;
@@ -7,7 +8,10 @@ interface JobProperties {
   amount: number;
   hired: number;
   remaining: number;
+  isHiring: boolean;
 }
+
+type JobInput = RequiredAllBut<JobProperties, "isHiring">;
 
 export class Job extends Entity<JobProperties> {
   get facility(): Facility {
@@ -30,11 +34,15 @@ export class Job extends Entity<JobProperties> {
     return this.properties.remaining;
   }
 
+  get isHiring(): boolean {
+    return this.properties.isHiring;
+  }
+
   private constructor(properties: JobProperties, id?: number) {
     super(properties, id);
   }
 
-  static create(properties: JobProperties, id?: number): Job {
+  static create(properties: JobInput, id?: number): Job {
     if (!properties.facility) {
       throw new Error("Job facility is required");
     }
@@ -50,13 +58,13 @@ export class Job extends Entity<JobProperties> {
     if (properties.amount < 0) {
       throw new Error("Job amount must be equal or greater than 0");
     }
-    if (!properties.hired) {
-      properties.hired = 0;
-    }
-    if (!properties.remaining) {
-      properties.remaining = properties.amount;
-    }
-    return new Job(properties);
+    const validProperties = {
+      ...properties,
+      hired: properties.hired ?? 0,
+      remaining: properties.remaining ?? properties.amount,
+      isHiring: properties.amount > 0,
+    };
+    return new Job(validProperties);
   }
 
   changeFacility(facility: Facility): void {

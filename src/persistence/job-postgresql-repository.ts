@@ -23,4 +23,18 @@ export class JobPostgresqlRepository implements JobRepository {
     `;
     return this.connection.query<JobPersistenceDto>(query);
   }
+
+  getHiringJobs(): Promise<JobPersistenceDto[]> {
+    const query = `
+      SELECT * FROM (
+        SELECT j.*, f.*, COUNT(h.job_id) as hired_nurses, (j.total_number_nurses_needed - COUNT(h.job_id)) as remaining
+        FROM jobs j
+        INNER JOIN nurse_hired_jobs h ON j.job_id = h.job_id
+        INNER JOIN facilities f ON j.facility_id = f.facility_id
+        WHERE j.job_id > 0
+        GROUP BY h.job_id, j.job_id, f.facility_id
+      ) AS foo WHERE foo.remaining > 0
+    `;
+    return this.connection.query<JobPersistenceDto>(query);
+  }
 }
